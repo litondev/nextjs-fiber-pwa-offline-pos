@@ -1,0 +1,11 @@
+email 
+- string 25 -> unique
+
+name
+- string 50
+
+address
+- text
+        
+phone
+- string 50

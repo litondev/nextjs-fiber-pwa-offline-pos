@@ -1,0 +1,8 @@
+name 
+- string 50
+
+email
+- string 50 -> unique
+
+password
+- text

@@ -1,0 +1,11 @@
+order_id
+- integer 
+
+product_id
+- ineteger
+
+qty
+- integer
+            
+price
+- decimal 20,2

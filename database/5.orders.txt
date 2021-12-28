@@ -1,0 +1,8 @@
+customer_id 
+- integer 
+
+user_id 
+- integer 
+
+total        
+- decimal 20,2
