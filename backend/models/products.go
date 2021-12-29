@@ -2,9 +2,12 @@ package models
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Product struct {
+	gorm.Model
 	ID          uint    `gorm:"primaryKey;autoIncrement"`
 	Name        string  `gorm:"size:50"`
 	Code        string  `gorm:"size:25"`
@@ -15,5 +18,5 @@ type Product struct {
 	CategoryID  *uint
 	CreatedAt   *time.Time
 	UpdatedAt   *time.Time
-	DeletedAt   *time.Time
+	DeletedAt   *gorm.DeletedAt
 }
