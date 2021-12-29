@@ -18,7 +18,19 @@ export default function DefaultLayout({children}){
                     <Link href="/pos/category">Category</Link>                                                                
                 </li>
                 <li>
-                    <Link href="/pos/product">Product0</Link>
+                    <Link href="/pos/product">Product</Link>
+                </li>
+                <li>
+                    <Link href="/pos/customer">Customer</Link>
+                </li>
+                <li>
+                    <Link href="/pos/order">Order</Link>
+                </li>
+                <li>
+                    <Link href="/pos/transaction">Transaksi</Link>
+                </li>
+                <li>
+                    <Link href="/pos/user">User</Link>
                 </li>
                 <li>
                     <a href="#"  onClick={onLogout}>
