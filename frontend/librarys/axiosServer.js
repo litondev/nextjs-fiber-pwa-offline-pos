@@ -5,7 +5,7 @@ export default function axiosServer(context){
 	var instance = axios.create({
     	baseURL : process.env.NEXT_PUBLIC_API_URL,
     	headers : {
-      		'Authorization' : getCookies(context,'token') ? 'Bearer '+getCookies(context,'token') : null
+      		'Authorization' : getCookies(context,'token').token ? 'Bearer '+getCookies(context,'token').token : null
     	}
   	})
 

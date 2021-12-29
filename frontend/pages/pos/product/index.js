@@ -1,5 +1,6 @@
 import { useContext,useEffect } from "react";
 import AppContext from "@/contexts/state"
+import DefaultLayout  from "@/layouts/default";
 
 export default function Home() {
   const auth = useContext(AppContext);
@@ -8,5 +9,9 @@ export default function Home() {
     console.log(auth);
   }, [])
 
-  return <h1>Hello World</h1>
+  return (
+    <DefaultLayout>
+      <h1>Product</h1>
+    </DefaultLayout>
+  )
 }

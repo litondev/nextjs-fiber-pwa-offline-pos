@@ -5,26 +5,11 @@ import Router from "next/router";
 import {useState} from "react"
 import { getCookies,setCookies,removeCookies } from 'cookies-next';
 
-import {ToastError,ToastSuccess} from "../librarys/toaster"
-import axiosClient from "../librarys/axiosClient";
+import {ToastError,ToastSuccess} from "@/librarys/toaster"
+import axiosClient from "@/librarys/axiosClient";
 
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-
-export async function getServerSideProps(context) {      
-    if(Object.keys(getCookies(context,'token')).length){
-      return {
-        redirect : {
-          destination: '/',
-          permanent : false
-        }
-      }
-    }  
-  
-    return {
-      props : {}
-    };
-  }
 
 const SigninSchema = Yup.object()
     .shape({      
@@ -107,7 +92,7 @@ const Signin = () => {
                             </div>
 
                             <div>                                                        
-                                <Link href="/register">Daftar</Link>                                                                
+                                <Link href="/auth/register">Daftar</Link>                                                                
                             </div>
                         </Form>
                         )

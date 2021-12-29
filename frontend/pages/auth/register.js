@@ -5,29 +5,14 @@ import Router from "next/router";
 import {useState} from "react"
 import { getCookies,setCookies,removeCookies } from 'cookies-next';
 
-import {ToastError,ToastSuccess} from "../librarys/toaster"
-import axiosClient from "../librarys/axiosClient";
+import {ToastError,ToastSuccess} from "@/librarys/toaster"
+import axiosClient from "@/librarys/axiosClient";
 
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-export async function getServerSideProps(context) {      
-    if(Object.keys(getCookies(context,'token')).length){
-      return {
-        redirect : {
-          destination: '/',
-          permanent : false
-        }
-      }
-    }  
-  
-    return {
-      props : {}
-    };
-  }
-
 const SigninSchema = Yup.object()
-    .shape({      
+    .shape({             
         // password: Yup.string()
         //     .min(8, 'Too Short!')
         //     .max(50, 'Too Long!')
@@ -45,12 +30,11 @@ const Signin = () => {
         password : ''
     })
 
-    const onSubmit = (values,{setErrors,setSubmitting}) => {            
+    const onSubmit = (values,{setErrors,setSubmitting}) => {     
         axiosClient.post("/register",values)
         .then(res => {
             setSubmitting(false)
-            // setCookies('token',res.data.access_token);                    
-            Router.push('/login')   
+            Router.push('/auth/login')   
         })           
         .catch(err => {         
             console.log(err)     
@@ -118,7 +102,7 @@ const Signin = () => {
                             </div>
 
                             <div>                                                        
-                                <Link href="/login">Masuk</Link>                                                                
+                                <Link href="/auth/login">Masuk</Link>                                                                
                             </div>
                         </Form>
                         )
