@@ -5,14 +5,12 @@ import (
 	"strings"
 )
 
-type SignupRequest struct {
-	Name     string `form:"name" json:"name" xml:"name" validate:"required"`
+type SigninRequest struct {
 	Email    string `form:"email" json:"email" xml:"email" validate:"required,email"`
 	Password string `form:"password" json:"password" xml:"password" validate:"required"`
 }
 
-func (requestData *SignupRequest) ValidateData() error {
-	requestData.Name = html.EscapeString(strings.Trim(requestData.Name, " "))
+func (requestData *SigninRequest) ValidateData() error {
 	requestData.Email = html.EscapeString(strings.Trim(requestData.Email, " "))
 	requestData.Password = html.EscapeString(strings.Trim(requestData.Password, " "))
 	return nil

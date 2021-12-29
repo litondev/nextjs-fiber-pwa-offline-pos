@@ -17,10 +17,6 @@ import (
 func Register(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
-	name := c.FormValue("name")
-	email := c.FormValue("email")
-	password := c.FormValue("password")
-
 	users := new(requests.SignupRequest)
 
 	if errParser := c.BodyParser(users); errParser != nil {
@@ -31,14 +27,16 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	errValidate := requests.ValidateStruct(*users)
+	users.ValidateData()
+
+	errValidate := requests.ValidateStruct(users)
 	if errValidate != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"errors": errValidate,
 		})
 	}
 
-	hash, errHash := helpers.HashPassword(password)
+	hash, errHash := helpers.HashPassword(users.Password)
 
 	if errHash != nil {
 		fmt.Println(errHash.Error())
@@ -49,8 +47,8 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	user := models.User{
-		Name:     name,
-		Email:    email,
+		Name:     users.Name,
+		Email:    users.Email,
 		Password: hash,
 	}
 
@@ -72,9 +70,6 @@ func Register(c *fiber.Ctx) error {
 func Login(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
-	email := c.FormValue("email")
-	password := c.FormValue("password")
-
 	users := new(requests.SigninRequest)
 
 	if errParser := c.BodyParser(users); errParser != nil {
@@ -85,7 +80,9 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	errValidate := requests.ValidateStruct(*users)
+	users.ValidateData()
+
+	errValidate := requests.ValidateStruct(users)
 	if errValidate != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"errors": errValidate,
@@ -96,7 +93,7 @@ func Login(c *fiber.Ctx) error {
 
 	queryUser := database.Model(&models.User{})
 	queryUser.Select("id", "password", "email")
-	queryUser.Where("email = ?", email)
+	queryUser.Where("email = ?", users.Email)
 	queryUser.First(&resultUser)
 
 	if len(resultUser) == 0 {
@@ -106,7 +103,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	isValidPassword := helpers.CheckPasswordHash(
-		password,
+		users.Password,
 		resultUser["password"].(string),
 	)
 
