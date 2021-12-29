@@ -129,5 +129,11 @@ func main() {
 	v1.Post("/refresh-token", controllers.RefreshToken)
 	v1.Get("/me", controllers.Me)
 
+	v1.Get("/category", controllers.IndexCategory)
+	v1.Post("/category", controllers.StoreCategory)
+	v1.Get("/category/:id", controllers.ShowCategory)
+	v1.Delete("/category/:id", controllers.DestroyCategory)
+	v1.Put("/category/:id", controllers.UpdateCategory)
+
 	app.Listen(os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT"))
 }

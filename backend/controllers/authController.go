@@ -115,7 +115,7 @@ func Login(c *fiber.Ctx) error {
 
 	claims := jwt.MapClaims{
 		"sub": resultUser["id"],
-		"exp": time.Now().Add(time.Minute * 1).Unix(),
+		"exp": time.Now().Add(time.Hour * 1).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -153,7 +153,7 @@ func RefreshToken(c *fiber.Ctx) error {
 
 	claims := jwt.MapClaims{
 		"sub": sub,
-		"exp": time.Now().Add(time.Minute * 1).Unix(),
+		"exp": time.Now().Add(time.Hour * 1).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
