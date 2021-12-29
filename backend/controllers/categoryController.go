@@ -21,7 +21,7 @@ func IndexCategory(c *fiber.Ctx) error {
 	per_page := c.Query("per_page", "10")
 	new_per_page, _ := strconv.Atoi(per_page)
 
-	// soft_deleted := c.Query("soft_deleted", "")
+	soft_deleted := c.Query("soft_deleted", "")
 
 	search := c.Query("search", "")
 
@@ -34,6 +34,10 @@ func IndexCategory(c *fiber.Ctx) error {
 
 	if search != "" {
 		queryResultCount.Where("name LIKE ?", "%"+search+"%")
+	}
+
+	if soft_deleted != "" {
+		queryResultCount.Unscoped()
 	}
 
 	queryResultCount.Count(&resultCount)
@@ -49,6 +53,10 @@ func IndexCategory(c *fiber.Ctx) error {
 	query.Select("name", "id", "description")
 	if search != "" {
 		query.Where("name LIKE ?", "%"+search+"%")
+	}
+
+	if soft_deleted != "" {
+		query.Unscoped()
 	}
 	query.Order("id desc")
 	query.Offset(limitStart)
