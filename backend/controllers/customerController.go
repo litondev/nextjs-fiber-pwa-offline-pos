@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func IndexCategory(c *fiber.Ctx) error {
+func IndexCustomer(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
 	page := c.Query("page", "1")
@@ -27,13 +27,15 @@ func IndexCategory(c *fiber.Ctx) error {
 
 	var resultCount int64
 
-	var modelCount models.Category
+	var modelCount models.Customer
 
 	queryResultCount := database.Model(&modelCount)
 	queryResultCount.Select("id")
 
 	if search != "" {
 		queryResultCount.Where("name LIKE ?", "%"+search+"%")
+		queryResultCount.Or("phone LIKE ?", "%"+search+"%")
+		queryResultCount.Or("address LIKE ?", "%"+search+"%")
 	}
 
 	if soft_deleted != "" {
@@ -48,11 +50,13 @@ func IndexCategory(c *fiber.Ctx) error {
 
 	result := []map[string]interface{}{}
 
-	var queryCount models.Category
+	var queryCount models.Customer
 	query := database.Model(&queryCount)
-	query.Select("name", "id", "description")
+	query.Select("name", "id", "phone", "email", "address")
 	if search != "" {
 		query.Where("name LIKE ?", "%"+search+"%")
+		query.Or("phone LIKE ?", "%"+search+"%")
+		query.Or("address LIKE ?", "%"+search+"%")
 	}
 
 	if soft_deleted != "" {
@@ -71,12 +75,12 @@ func IndexCategory(c *fiber.Ctx) error {
 	})
 }
 
-func StoreCategory(c *fiber.Ctx) error {
+func StoreCustomer(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
-	category := new(requests.CategoryRequest)
+	customer := new(requests.CustomerRequest)
 
-	if errParser := c.BodyParser(category); errParser != nil {
+	if errParser := c.BodyParser(customer); errParser != nil {
 		fmt.Println(errParser.Error())
 
 		return c.Status(500).JSON(fiber.Map{
@@ -84,24 +88,26 @@ func StoreCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	category.ValidateData()
+	customer.ValidateData()
 
-	errValidate := requests.ValidateStruct(category)
+	errValidate := requests.ValidateStruct(customer)
 	if errValidate != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"errors": errValidate,
 		})
 	}
 
-	categoryModel := models.Category{
-		Name:        category.Name,
-		Description: category.Description,
+	customerModel := models.Customer{
+		Name:    customer.Name,
+		Email:   customer.Email,
+		Address: customer.Address,
+		Phone:   customer.Phone,
 	}
 
-	errCreateCategory := database.Create(&categoryModel).Error
+	errCreateCustomer := database.Create(&customerModel).Error
 
-	if errCreateCategory != nil {
-		fmt.Println(errCreateCategory.Error())
+	if errCreateCustomer != nil {
+		fmt.Println(errCreateCustomer.Error())
 
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Terjadi Kesalahan",
@@ -113,7 +119,7 @@ func StoreCategory(c *fiber.Ctx) error {
 	})
 }
 
-func ShowCategory(c *fiber.Ctx) error {
+func ShowCustomer(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
 	id, errGetParam := strconv.Atoi(c.Params("id"))
@@ -127,8 +133,8 @@ func ShowCategory(c *fiber.Ctx) error {
 
 	resultData := map[string]interface{}{}
 
-	queryData := database.Model(&models.Category{})
-	queryData.Select("id", "name", "description")
+	queryData := database.Model(&models.Customer{})
+	queryData.Select("name", "id", "phone", "email", "address")
 	queryData.Where("id = ?", id)
 	queryData.First(&resultData)
 
@@ -143,7 +149,7 @@ func ShowCategory(c *fiber.Ctx) error {
 	})
 }
 
-func UpdateCategory(c *fiber.Ctx) error {
+func UpdateCustomer(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
 	id, errGetParam := strconv.Atoi(c.Params("id"))
@@ -155,26 +161,26 @@ func UpdateCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	category := new(requests.CategoryRequest)
+	customer := new(requests.CustomerRequest)
 
-	if errParser := c.BodyParser(category); errParser != nil {
+	if errParser := c.BodyParser(customer); errParser != nil {
 		fmt.Println(errParser.Error())
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Terjadi Kesalahan",
 		})
 	}
 
-	category.ValidateData()
+	customer.ValidateData()
 
-	errValidate := requests.ValidateStruct(category)
+	errValidate := requests.ValidateStruct(customer)
 	if errValidate != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"errors": errValidate,
 		})
 	}
 
-	queryData := database.Model(&models.Category{})
-	queryData.Select("name", "description")
+	queryData := database.Model(&models.Customer{})
+	queryData.Select("name", "phone", "email", "address")
 	queryData.Where("id = ?", id)
 
 	resultData := map[string]interface{}{}
@@ -187,9 +193,11 @@ func UpdateCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	queryData.Updates(&models.Category{
-		Name:        category.Name,
-		Description: category.Description,
+	queryData.Updates(&models.Customer{
+		Name:    customer.Name,
+		Email:   customer.Email,
+		Address: customer.Address,
+		Phone:   customer.Phone,
 	})
 
 	if queryData.Error != nil {
@@ -205,7 +213,7 @@ func UpdateCategory(c *fiber.Ctx) error {
 	})
 }
 
-func DestroyCategory(c *fiber.Ctx) error {
+func DestroyCustomer(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
 	id, errGetParam := strconv.Atoi(c.Params("id"))
@@ -217,7 +225,7 @@ func DestroyCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	queryData := database.Model(&models.Category{})
+	queryData := database.Model(&models.Customer{})
 	queryData.Where("id = ?", id)
 
 	resultData := map[string]interface{}{}
@@ -230,7 +238,7 @@ func DestroyCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	queryData.Delete(&models.Category{})
+	queryData.Delete(&models.Customer{})
 
 	if queryData.Error != nil {
 		fmt.Println(queryData.Error)

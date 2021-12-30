@@ -5,6 +5,7 @@ import (
 	"math"
 	"strconv"
 
+	"api-gofiber/pos/helpers"
 	"api-gofiber/pos/models"
 	"api-gofiber/pos/requests"
 
@@ -12,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func IndexCategory(c *fiber.Ctx) error {
+func IndexUser(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
 	page := c.Query("page", "1")
@@ -27,7 +28,7 @@ func IndexCategory(c *fiber.Ctx) error {
 
 	var resultCount int64
 
-	var modelCount models.Category
+	var modelCount models.User
 
 	queryResultCount := database.Model(&modelCount)
 	queryResultCount.Select("id")
@@ -48,9 +49,9 @@ func IndexCategory(c *fiber.Ctx) error {
 
 	result := []map[string]interface{}{}
 
-	var queryCount models.Category
+	var queryCount models.User
 	query := database.Model(&queryCount)
-	query.Select("name", "id", "description")
+	query.Select("name", "id", "email")
 	if search != "" {
 		query.Where("name LIKE ?", "%"+search+"%")
 	}
@@ -71,12 +72,12 @@ func IndexCategory(c *fiber.Ctx) error {
 	})
 }
 
-func StoreCategory(c *fiber.Ctx) error {
+func StoreUser(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
-	category := new(requests.CategoryRequest)
+	user := new(requests.UserRequest)
 
-	if errParser := c.BodyParser(category); errParser != nil {
+	if errParser := c.BodyParser(user); errParser != nil {
 		fmt.Println(errParser.Error())
 
 		return c.Status(500).JSON(fiber.Map{
@@ -84,24 +85,35 @@ func StoreCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	category.ValidateData()
+	user.ValidateData()
 
-	errValidate := requests.ValidateStruct(category)
+	errValidate := requests.ValidateStruct(user)
 	if errValidate != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"errors": errValidate,
 		})
 	}
 
-	categoryModel := models.Category{
-		Name:        category.Name,
-		Description: category.Description,
+	hash, errHash := helpers.HashPassword(*user.Password)
+
+	if errHash != nil {
+		fmt.Println(errHash.Error())
+
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Terjadi Kesalahan",
+		})
 	}
 
-	errCreateCategory := database.Create(&categoryModel).Error
+	userModel := models.User{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: hash,
+	}
 
-	if errCreateCategory != nil {
-		fmt.Println(errCreateCategory.Error())
+	errCreateUser := database.Create(&userModel).Error
+
+	if errCreateUser != nil {
+		fmt.Println(errCreateUser.Error())
 
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Terjadi Kesalahan",
@@ -113,7 +125,7 @@ func StoreCategory(c *fiber.Ctx) error {
 	})
 }
 
-func ShowCategory(c *fiber.Ctx) error {
+func ShowUser(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
 	id, errGetParam := strconv.Atoi(c.Params("id"))
@@ -127,8 +139,8 @@ func ShowCategory(c *fiber.Ctx) error {
 
 	resultData := map[string]interface{}{}
 
-	queryData := database.Model(&models.Category{})
-	queryData.Select("id", "name", "description")
+	queryData := database.Model(&models.User{})
+	queryData.Select("name", "id", "email")
 	queryData.Where("id = ?", id)
 	queryData.First(&resultData)
 
@@ -143,7 +155,7 @@ func ShowCategory(c *fiber.Ctx) error {
 	})
 }
 
-func UpdateCategory(c *fiber.Ctx) error {
+func UpdateUser(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
 	id, errGetParam := strconv.Atoi(c.Params("id"))
@@ -155,26 +167,26 @@ func UpdateCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	category := new(requests.CategoryRequest)
+	user := new(requests.UserRequest)
 
-	if errParser := c.BodyParser(category); errParser != nil {
+	if errParser := c.BodyParser(user); errParser != nil {
 		fmt.Println(errParser.Error())
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Terjadi Kesalahan",
 		})
 	}
 
-	category.ValidateData()
+	user.ValidateData()
 
-	errValidate := requests.ValidateStruct(category)
+	errValidate := requests.ValidateStruct(user)
 	if errValidate != nil {
 		return c.Status(422).JSON(fiber.Map{
 			"errors": errValidate,
 		})
 	}
 
-	queryData := database.Model(&models.Category{})
-	queryData.Select("name", "description")
+	queryData := database.Model(&models.User{})
+	queryData.Select("name", "email")
 	queryData.Where("id = ?", id)
 
 	resultData := map[string]interface{}{}
@@ -187,10 +199,28 @@ func UpdateCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	queryData.Updates(&models.Category{
-		Name:        category.Name,
-		Description: category.Description,
-	})
+	if user.Password == nil {
+		queryData.Updates(&models.User{
+			Name:  user.Name,
+			Email: user.Email,
+		})
+	} else {
+		hash, errHash := helpers.HashPassword(*user.Password)
+
+		if errHash != nil {
+			fmt.Println(errHash.Error())
+
+			return c.Status(500).JSON(fiber.Map{
+				"message": "Terjadi Kesalahan",
+			})
+		}
+
+		queryData.Updates(&models.User{
+			Name:     user.Name,
+			Email:    user.Email,
+			Password: hash,
+		})
+	}
 
 	if queryData.Error != nil {
 		fmt.Println(queryData.Error)
@@ -205,7 +235,7 @@ func UpdateCategory(c *fiber.Ctx) error {
 	})
 }
 
-func DestroyCategory(c *fiber.Ctx) error {
+func DestroyUser(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
 	id, errGetParam := strconv.Atoi(c.Params("id"))
@@ -217,7 +247,7 @@ func DestroyCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	queryData := database.Model(&models.Category{})
+	queryData := database.Model(&models.User{})
 	queryData.Where("id = ?", id)
 
 	resultData := map[string]interface{}{}
@@ -230,7 +260,7 @@ func DestroyCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	queryData.Delete(&models.Category{})
+	queryData.Delete(&models.User{})
 
 	if queryData.Error != nil {
 		fmt.Println(queryData.Error)

@@ -135,5 +135,17 @@ func main() {
 	v1.Delete("/category/:id", controllers.DestroyCategory)
 	v1.Put("/category/:id", controllers.UpdateCategory)
 
+	v1.Get("/customer", controllers.IndexCustomer)
+	v1.Post("/customer", controllers.StoreCustomer)
+	v1.Get("/customer/:id", controllers.ShowCustomer)
+	v1.Delete("/customer/:id", controllers.DestroyCustomer)
+	v1.Put("/customer/:id", controllers.UpdateCustomer)
+
+	v1.Get("/user", controllers.IndexUser)
+	v1.Post("/user", controllers.StoreUser)
+	v1.Get("/user/:id", controllers.ShowUser)
+	v1.Delete("/user/:id", controllers.DestroyUser)
+	v1.Put("/user/:id", controllers.UpdateUser)
+
 	app.Listen(os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT"))
 }
