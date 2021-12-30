@@ -146,6 +146,48 @@ func main() {
 			}
 		}
 
+		// ORDER
+		for i := 0; i < 15; i++ {
+			var Id uint = 1
+			pId := &Id
+			order := models.Order{
+				Total:      100000,
+				UserID:     pId,
+				CustomerID: pId,
+			}
+
+			result := database.Create(&order)
+
+			if result.Error == nil {
+				fmt.Println("Success Memasukan " + strconv.Itoa(int(result.RowsAffected)) + " Data")
+			} else {
+				fmt.Print(result.Error)
+				os.Exit(1)
+			}
+		}
+
+		// DETAIL ORDER
+		for i := 0; i < 15; i++ {
+			var Id uint = 1
+			pId := &Id
+
+			detailOrder := models.DetailOrder{
+				Qty:       10,
+				Price:     10000,
+				OrderID:   pId,
+				ProductID: pId,
+			}
+
+			result := database.Create(&detailOrder)
+
+			if result.Error == nil {
+				fmt.Println("Success Memasukan " + strconv.Itoa(int(result.RowsAffected)) + " Data")
+			} else {
+				fmt.Print(result.Error)
+				os.Exit(1)
+			}
+		}
+
 		fmt.Println("Success Seed")
 	}
 }

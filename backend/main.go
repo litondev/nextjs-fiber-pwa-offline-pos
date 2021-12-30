@@ -154,5 +154,8 @@ func main() {
 	v1.Delete("/product/:id", controllers.DestroyProduct)
 	v1.Put("/product/:id", controllers.UpdateProduct)
 
+	v1.Get("/order", controllers.IndexOrder)
+	v1.Get("/order/:id", controllers.ShowOrder)
+
 	app.Listen(os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT"))
 }

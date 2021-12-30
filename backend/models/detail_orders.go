@@ -16,4 +16,6 @@ type DetailOrder struct {
 	CreatedAt *time.Time      `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt *time.Time      `gorm:"column:updated_at" json:"updated_at"`
 	DeletedAt *gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
+	Order     Order           `gorm:"Foreignkey:OrderID;association_foreignkey:ID;" json:"order"`
+	Product   Product         `gorm:"Foreignkey:ProductID;association_foreignkey:ID;" json:"product"`
 }

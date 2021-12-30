@@ -84,3 +84,5 @@ Error : 2021/12/30 14:50:39 2021-12-30 14:50:39.348643095 +0700 WIB m=+4.0091500
 Error : 2021/12/30 14:50:39 interface conversion: interface {} is nil, not *string
 Error : 2021/12/30 14:51:14 2021-12-30 14:51:14.533671623 +0700 WIB m=+1.251755325
 Error : 2021/12/30 14:51:14 interface conversion: interface {} is nil, not *string
+Error : 2021/12/30 16:30:20 2021-12-30 16:30:20.275660974 +0700 WIB m=+1.985546859
+Error : 2021/12/30 16:30:20 runtime error: invalid memory address or nil pointer dereference
