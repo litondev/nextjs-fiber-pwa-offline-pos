@@ -1,14 +1,19 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"math"
+	"mime/multipart"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
 	"api-gofiber/pos/models"
 	"api-gofiber/pos/requests"
 
+	"github.com/disintegration/imaging"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -108,6 +113,45 @@ func GetCodeProduct(c *fiber.Ctx) error {
 	})
 }
 
+func UploadProduct(file *multipart.FileHeader, c *fiber.Ctx) (*string, error) {
+	time := time.Now()
+
+	filename := strconv.Itoa(time.Nanosecond()) + "-" + file.Filename
+
+	pathname := filepath.Base("./") + "/assets/images/products/" + filename
+
+	// if _, errFileExists := os.Stat(pathname); errFileExists == nil {
+	// 	errRemoveFile := os.Remove(pathname)
+	// 	if errRemoveFile != nil {
+	// 		fmt.Println(errRemoveFile.Error())
+	// 		return nil, errors.New("Terjadi Kesalahan Pada Saat Upload")
+	// 	}
+	// }
+
+	if errUploadFile := c.SaveFile(file, pathname); errUploadFile != nil {
+		fmt.Println(errUploadFile.Error())
+		return nil, errors.New("Terjadi Kesalahan Pada Saat Upload")
+	}
+
+	openFile, errOpenFile := imaging.Open(pathname)
+
+	if errOpenFile != nil {
+		fmt.Println(errOpenFile.Error())
+		return nil, errors.New("Terjadi Kesalahan Pada Saat Upload")
+	}
+
+	resizeFile := imaging.Resize(openFile, 128, 128, imaging.Lanczos)
+
+	errRessizeFile := imaging.Save(resizeFile, pathname)
+
+	if errRessizeFile != nil {
+		fmt.Println(errRessizeFile.Error())
+		return nil, errors.New("Terjadi Kesalahan Pada Saat Upload")
+	}
+
+	return &filename, nil
+}
+
 func StoreProduct(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
@@ -123,13 +167,6 @@ func StoreProduct(c *fiber.Ctx) error {
 
 	product.ValidateData()
 
-	errorPhotoValidation := product.ValidatePhoto()
-	if errorPhotoValidation != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"message": errorPhotoValidation.Error(),
-		})
-	}
-
 	errorCategoryValidation := product.ValidateExistsCategory(database)
 	if errorCategoryValidation != nil {
 		return c.Status(500).JSON(fiber.Map{
@@ -142,6 +179,28 @@ func StoreProduct(c *fiber.Ctx) error {
 		return c.Status(422).JSON(fiber.Map{
 			"errors": errValidate,
 		})
+	}
+
+	file, _ := c.FormFile("photo")
+	var filename *string = nil
+	var errorUpload error = nil
+
+	if file != nil {
+		errorPhotoValidation := product.ValidatePhoto(file)
+
+		if errorPhotoValidation != nil {
+			return c.Status(500).JSON(fiber.Map{
+				"message": errorPhotoValidation.Error(),
+			})
+		}
+
+		filename, errorUpload = UploadProduct(file, c)
+
+		if errorUpload != nil {
+			return c.Status(500).JSON(fiber.Map{
+				"message": errorUpload.Error(),
+			})
+		}
 	}
 
 	price, _ := strconv.ParseFloat(product.Price, 32)
@@ -157,6 +216,7 @@ func StoreProduct(c *fiber.Ctx) error {
 		Stock:       int(stock),
 		Price:       float32(price),
 		CategoryID:  realCategoryData,
+		Photo:       filename,
 	}
 
 	errCreateProduct := database.Create(&productModel).Error
@@ -225,13 +285,6 @@ func UpdateProduct(c *fiber.Ctx) error {
 
 	product.ValidateData()
 
-	errorPhotoValidation := product.ValidatePhoto()
-	if errorPhotoValidation != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"message": errorPhotoValidation.Error(),
-		})
-	}
-
 	errorCategoryValidation := product.ValidateExistsCategory(database)
 	if errorCategoryValidation != nil {
 		return c.Status(500).JSON(fiber.Map{
@@ -244,6 +297,28 @@ func UpdateProduct(c *fiber.Ctx) error {
 		return c.Status(422).JSON(fiber.Map{
 			"errors": errValidate,
 		})
+	}
+
+	file, _ := c.FormFile("photo")
+	var filename *string = nil
+	var errorUpload error = nil
+
+	if file != nil {
+		errorPhotoValidation := product.ValidatePhoto(file)
+
+		if errorPhotoValidation != nil {
+			return c.Status(500).JSON(fiber.Map{
+				"message": errorPhotoValidation.Error(),
+			})
+		}
+
+		filename, errorUpload = UploadProduct(file, c)
+
+		if errorUpload != nil {
+			return c.Status(500).JSON(fiber.Map{
+				"message": errorUpload.Error(),
+			})
+		}
 	}
 
 	queryData := database.Model(&models.Product{})
@@ -260,6 +335,21 @@ func UpdateProduct(c *fiber.Ctx) error {
 		})
 	}
 
+	photo := resultData["photo"]
+	if file != nil && photo != nil {
+		pathname := filepath.Base("./") + "/assets/images/products/" + *photo.(*string)
+
+		if _, errFileExists := os.Stat(pathname); errFileExists == nil {
+			errRemoveFile := os.Remove(pathname)
+			if errRemoveFile != nil {
+				fmt.Println(errRemoveFile.Error())
+				return c.Status(500).JSON(fiber.Map{
+					"message": "Terjadi Kesalahan",
+				})
+			}
+		}
+	}
+
 	price, _ := strconv.ParseFloat(product.Price, 32)
 	stock, _ := strconv.ParseInt(product.Stock, 10, 32)
 	categoryID, _ := strconv.ParseUint(product.CategoryID, 10, 32)
@@ -273,6 +363,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 		Stock:       int(stock),
 		Price:       float32(price),
 		CategoryID:  realCategoryData,
+		Photo:       filename,
 	})
 
 	if queryData.Error != nil {

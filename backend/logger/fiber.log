@@ -72,3 +72,15 @@ Error : 2021/12/30 13:01:13 2021-12-30 13:01:13.83732231 +0700 WIB m=+3.68159892
 Error : 2021/12/30 13:01:13 Undefined validation function 'gt:0' on field 'Price'
 Error : 2021/12/30 13:01:22 2021-12-30 13:01:22.291684166 +0700 WIB m=+12.135960762
 Error : 2021/12/30 13:01:22 Undefined validation function 'gt:0' on field 'Price'
+Error : 2021/12/30 14:08:01 2021-12-30 14:08:01.635881159 +0700 WIB m=+0.549097096
+Error : 2021/12/30 14:08:01 runtime error: invalid memory address or nil pointer dereference
+Error : 2021/12/30 14:08:36 2021-12-30 14:08:36.506076304 +0700 WIB m=+1.303082444
+Error : 2021/12/30 14:08:36 runtime error: invalid memory address or nil pointer dereference
+Error : 2021/12/30 14:47:29 2021-12-30 14:47:29.685928413 +0700 WIB m=+1.350891758
+Error : 2021/12/30 14:47:29 interface conversion: interface {} is *string, not string
+Error : 2021/12/30 14:49:29 2021-12-30 14:49:29.680911745 +0700 WIB m=+6.908007892
+Error : 2021/12/30 14:49:29 interface conversion: interface {} is nil, not *string
+Error : 2021/12/30 14:50:39 2021-12-30 14:50:39.348643095 +0700 WIB m=+4.009150022
+Error : 2021/12/30 14:50:39 interface conversion: interface {} is nil, not *string
+Error : 2021/12/30 14:51:14 2021-12-30 14:51:14.533671623 +0700 WIB m=+1.251755325
+Error : 2021/12/30 14:51:14 interface conversion: interface {} is nil, not *string

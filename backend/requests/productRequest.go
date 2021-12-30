@@ -4,6 +4,7 @@ import (
 	"api-gofiber/pos/models"
 	"errors"
 	"html"
+	"mime/multipart"
 	"strings"
 
 	"gorm.io/gorm"
@@ -30,7 +31,11 @@ func (requestData *ProductRequest) ValidateData() error {
 	return nil
 }
 
-func (requestData *ProductRequest) ValidatePhoto() error {
+func (requestData *ProductRequest) ValidatePhoto(file *multipart.FileHeader) error {
+	if false == (file.Header["Content-Type"][0] == "image/jpeg" || file.Header["Content-Type"][0] == "image/png" || file.Header["Content-Type"][0] == "image/jpg") {
+		return errors.New("Gambar tidak valid")
+	}
+
 	return nil
 }
 
