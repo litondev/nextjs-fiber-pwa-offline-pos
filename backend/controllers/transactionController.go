@@ -58,6 +58,8 @@ func Transaction(c *fiber.Ctx) error {
 	realCustomerId := uint(customerId)
 	pointerCustomerId := &realCustomerId
 
+	tx := database.Begin()
+
 	order := models.Order{
 		UserID:     newRealId,
 		CustomerID: pointerCustomerId,
@@ -67,7 +69,7 @@ func Transaction(c *fiber.Ctx) error {
 
 	if errCreateOrder != nil {
 		fmt.Println(errCreateOrder.Error())
-
+		tx.Rollback()
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Terjadi Kesalahan",
 		})
@@ -95,7 +97,7 @@ func Transaction(c *fiber.Ctx) error {
 
 		if errCreateDetailOrder != nil {
 			fmt.Println(errCreateDetailOrder.Error())
-
+			tx.Rollback()
 			return c.Status(500).JSON(fiber.Map{
 				"message": "Terjadi Kesalahan",
 			})
@@ -114,12 +116,13 @@ func Transaction(c *fiber.Ctx) error {
 
 	if errUpdateOrder != nil {
 		fmt.Println(errUpdateOrder.Error())
-
+		tx.Rollback()
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Terjadi Kesalahan",
 		})
 	}
 
+	tx.Commit()
 	return c.Status(200).JSON(fiber.Map{
 		"message": true,
 	})
