@@ -157,5 +157,7 @@ func main() {
 	v1.Get("/order", controllers.IndexOrder)
 	v1.Get("/order/:id", controllers.ShowOrder)
 
+	v1.Post("/transaction", controllers.Transaction)
+
 	app.Listen(os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT"))
 }

@@ -86,3 +86,7 @@ Error : 2021/12/30 14:51:14 2021-12-30 14:51:14.533671623 +0700 WIB m=+1.2517553
 Error : 2021/12/30 14:51:14 interface conversion: interface {} is nil, not *string
 Error : 2021/12/30 16:30:20 2021-12-30 16:30:20.275660974 +0700 WIB m=+1.985546859
 Error : 2021/12/30 16:30:20 runtime error: invalid memory address or nil pointer dereference
+Error : 2021/12/30 17:10:58 2021-12-30 17:10:58.413907379 +0700 WIB m=+1.171123116
+Error : 2021/12/30 17:10:58 Undefined validation function 'min:1' on field 'DetailOrders'
+Error : 2021/12/30 17:45:53 2021-12-30 17:45:53.254009902 +0700 WIB m=+22.421647163
+Error : 2021/12/30 17:45:53 interface conversion: interface {} is float64, not *uint
