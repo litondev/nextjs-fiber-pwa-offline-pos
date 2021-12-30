@@ -75,7 +75,7 @@ func IndexUser(c *fiber.Ctx) error {
 func StoreUser(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
-	user := new(requests.UserRequest)
+	user := new(requests.UserAddRequest)
 
 	if errParser := c.BodyParser(user); errParser != nil {
 		fmt.Println(errParser.Error())
@@ -94,7 +94,7 @@ func StoreUser(c *fiber.Ctx) error {
 		})
 	}
 
-	hash, errHash := helpers.HashPassword(*user.Password)
+	hash, errHash := helpers.HashPassword(user.Password)
 
 	if errHash != nil {
 		fmt.Println(errHash.Error())
@@ -167,7 +167,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	user := new(requests.UserRequest)
+	user := new(requests.UserUpdateRequest)
 
 	if errParser := c.BodyParser(user); errParser != nil {
 		fmt.Println(errParser.Error())
