@@ -147,5 +147,12 @@ func main() {
 	v1.Delete("/user/:id", controllers.DestroyUser)
 	v1.Put("/user/:id", controllers.UpdateUser)
 
+	v1.Get("/product", controllers.IndexProduct)
+	v1.Get("/product/code", controllers.GetCodeProduct)
+	v1.Post("/product", controllers.StoreProduct)
+	v1.Get("/product/:id", controllers.ShowProduct)
+	v1.Delete("/product/:id", controllers.DestroyProduct)
+	v1.Put("/product/:id", controllers.UpdateProduct)
+
 	app.Listen(os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT"))
 }

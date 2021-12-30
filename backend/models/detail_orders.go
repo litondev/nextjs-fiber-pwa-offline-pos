@@ -8,12 +8,12 @@ import (
 
 type DetailOrder struct {
 	gorm.Model
-	ID        uint `gorm:"primaryKey;autoIncrement"`
-	OrderID   *uint
-	ProductID *uint
-	Qty       int     `gorm:"default:1"`
-	Price     float32 `gorm:type:decimal(10,2);default:0.00`
-	CreatedAt *time.Time
-	UpdatedAt *time.Time
-	DeletedAt *gorm.DeletedAt
+	ID        uint            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	OrderID   *uint           `gorm:"column:order_id" json:"order_id"`
+	ProductID *uint           `gorm:"column:product_id" json:"product_id"`
+	Qty       int             `gorm:"column:qty;default:1" json:"qty"`
+	Price     float32         `gorm:"column:price;type:decimal(10,2);default:0.00" json:"price"`
+	CreatedAt *time.Time      `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt *time.Time      `gorm:"column:updated_at" json:"updated_at"`
+	DeletedAt *gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
