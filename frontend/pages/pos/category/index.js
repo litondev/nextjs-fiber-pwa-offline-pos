@@ -10,10 +10,8 @@ import * as Yup from 'yup';
 
 const SigninSchema = Yup.object()
     .shape({            
-        name : Yup.string()            
-            .required('Required'),
-        description : Yup.string()            
-            .required('Required'),
+        name : Yup.string().required('Required'),
+        description : Yup.string().required('Required'),
     });
     
 export async function getServerSideProps(context) {

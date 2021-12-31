@@ -72,6 +72,7 @@ func IndexCustomer(c *fiber.Ctx) error {
 		"per_page":   new_per_page,
 		"total_page": total_page,
 		"total_data": resultCount,
+		"page":       new_page,
 	})
 }
 
