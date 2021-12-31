@@ -23,11 +23,11 @@ function refreshToken(){
 		const miliseconds = dateNow.getTime() / 1000
 		
 		// EXPIRED TOKEN 
-		console.log(moment(decodedJWT.exp*1000).format("hh:mm:ss"))
+		// console.log(moment(decodedJWT.exp*1000).format("hh:mm:ss"))
 		// TIME TO REFRESH TOKEN
-		console.log(moment(decodedJWT.exp*1000).subtract(30,'seconds').format("hh:mm:ss"))
+		// console.log(moment(decodedJWT.exp*1000).subtract(30,'seconds').format("hh:mm:ss"))
 		// TIME NOW
-		console.log(moment(miliseconds*1000).format("hh:mm:ss"))
+		// console.log(moment(miliseconds*1000).format("hh:mm:ss"))
 
 		if(moment(miliseconds*1000).isAfter(moment(decodedJWT.exp*1000).subtract(30,'seconds'))){
 			let sendRefreshToken = axios;
