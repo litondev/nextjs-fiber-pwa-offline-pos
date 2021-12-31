@@ -43,5 +43,5 @@ export default function DefaultLayout({children}){
                 {children}
             </div>
         </>
-    )
+        )
 }

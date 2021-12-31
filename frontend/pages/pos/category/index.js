@@ -2,10 +2,9 @@ import { useEffect,useState} from "react";
 import DefaultLayout  from "@/layouts/default";
 import axiosServer from "@/librarys/axiosServer";
 import axiosClient  from "@/librarys/axiosClient";
-import useOfflineDb from "@/hooks/useOfflineDb";
 import { useRouter } from 'next/router'
 import {ToastError,ToastSuccess} from "@/librarys/toaster"
-
+import { useIndexedDBStore } from "use-indexeddb";
 import { Formik,Form,Field, ErrorMessage,useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -35,7 +34,7 @@ export async function getServerSideProps(context) {
     }
 
     if(err.isAxiosError && !err.response){
-      var data = { data : [] }
+      var data = { data : [] ,isOffline : true}
       isSuccess = true;
     }
   }
@@ -54,12 +53,13 @@ export default function Category(props) {
   const router = useRouter();
   const [categories,setCategories] = useState({...props.data})
   const [params,setParams] = useState({...props.params})
-  const [db] = useOfflineDb(6)
   const [loadings,setLoadings] = useState({
     isDelete : false,
     isForm : false,
     isPage : false,
   })
+
+  const { add } = useIndexedDBStore("customers");  
 
   const { values, errors, handleChange, setFieldValue,setValues } = useFormik({
     initialValues: {
@@ -79,19 +79,6 @@ export default function Category(props) {
       ...props.data
     })
   },[props.data])
-
-  // useEffect(() => {
-  //   if(db){
-  //     db.transaction(["categories"], "readwrite")
-  //     .objectStore("categories")
-  //     .add({
-  //       ssn : 1,
-  //       id : 1,
-  //       name : "test1",
-  //       email : "test1"
-  //     })
-  //   }
-  // },[db])
 
   const onPage = (isNext) => {  
     router.push({
@@ -155,7 +142,19 @@ export default function Category(props) {
     })    
   }
 
+  const onSubmitOfflie = async(values) => {
+    try{
+      console.log(values)
+      await add({ 
+        name:  values.name,
+        description : values.description,                            
+      })
 
+      ToastSuccess(`Berhasil ${values.isEditable ? 'Edit' : 'Tambah'} Data`)
+    }catch(err){
+      console.log(err)
+    }      
+  }
   const onSubmit = async (values,{setErrors,setSubmitting}) => {      
     try{
       if(values.isEditable){
@@ -173,7 +172,11 @@ export default function Category(props) {
         query: params
       });        
 
-    }catch(err){
+    }catch(err){      
+      if(err.isAxiosError && !err.response){
+        onSubmitOfflie(values)
+        return
+      }
       console.log(err)
       ToastError(err,setErrors)                        
     }finally{

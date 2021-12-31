@@ -23,8 +23,8 @@ const useOfflineDb = (version = 1) => {
     console.log("Fungsi ini akan terpangil jika ada perubahan versi db");
 
     try{
-        let objectStoreCustomers = database.createObjectStore("categories", { keyPath: "ssn" });
-        objectStoreCustomers.createIndex("id", "id", { unique: true });
+        let objectStoreCustomers = database.createObjectStore("categories", { keyPath: "ssn" , autoIncrement : true });
+        objectStoreCustomers.createIndex("id", "id", { unique: false });
         objectStoreCustomers.createIndex("name", "name", { unique: false });
         objectStoreCustomers.createIndex("description", "description", { unique: false });
     }catch(err){

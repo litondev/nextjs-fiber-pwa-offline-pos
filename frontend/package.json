@@ -12,11 +12,13 @@
     "axios": "^0.24.0",
     "cookies-next": "^2.0.3",
     "formik": "^2.2.9",
+    "indexeddb": "^0.0.0",
     "moment": "^2.29.1",
     "next": "12.0.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-toastify": "^8.1.0",
+    "use-indexeddb": "^1.0.9",
     "yup": "^0.32.11"
   },
   "devDependencies": {

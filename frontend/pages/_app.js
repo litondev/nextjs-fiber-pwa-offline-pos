@@ -5,13 +5,32 @@ import { getCookies,setCookies,removeCookies } from 'cookies-next';
 import axiosServer from "@/librarys/axiosServer";
 import axiosClient from "@/librarys/axiosClient";
 import { Router } from 'next/router';
+import IndexedDBProvider, { useIndexedDBStore } from "use-indexeddb";
+
+const idbConfig = {
+    databaseName: "pos",
+    version: 4,
+    stores: [
+      {
+        name: "customers",
+        id: { keyPath: "ssn", autoIncrement: true },
+        indices: [
+          { name: "id", keyPath: "id", options: { unique: false } },
+          { name: "name", keyPath: "name", options: { unique: false } },
+          { name: "description", keyPath: "description" ,options: { unique: false } },
+        ],
+      },
+    ],
+  };
 
 function MyApp({ Component, pageProps,user}) {
   return (
-    <AppWrapper user={user}>  
-      <Component {...pageProps} />
-      <ToastContainer/>
-    </AppWrapper>
+    <IndexedDBProvider config={idbConfig}>            
+      <AppWrapper user={user}>  
+        <Component {...pageProps} />
+        <ToastContainer/>
+      </AppWrapper>
+    </IndexedDBProvider>    
   )
 }
 
