@@ -2,6 +2,7 @@ import { useEffect,useState} from "react";
 import DefaultLayout  from "@/layouts/default";
 import axiosServer from "@/librarys/axiosServer";
 import axiosClient  from "@/librarys/axiosClient";
+import useOfflineDb from "@/hooks/useOfflineDb";
 import { useRouter } from 'next/router'
 import {ToastError,ToastSuccess} from "@/librarys/toaster"
 
@@ -24,16 +25,19 @@ export async function getServerSideProps(context) {
   }
   
   try{
-    console.log(params)
-    var {data}  = await axiosServer(context).get("/category",{params});    
-    
-  }catch(err){ 
-    var data = {}
+    var {data}  = await axiosServer(context).get("/categorys",{params});        
+  }catch(err){     
+    isSuccess = false    
+
     if(err.response){
       let { status, statusText, data: response } = err.response
       var data = { status,statusText,data : response }
     }
-    isSuccess = false    
+
+    if(err.isAxiosError && !err.response){
+      var data = { data : [] }
+      isSuccess = true;
+    }
   }
   
   return {
@@ -50,6 +54,7 @@ export default function Category(props) {
   const router = useRouter();
   const [categories,setCategories] = useState({...props.data})
   const [params,setParams] = useState({...props.params})
+  const [db] = useOfflineDb(6)
   const [loadings,setLoadings] = useState({
     isDelete : false,
     isForm : false,
@@ -65,12 +70,28 @@ export default function Category(props) {
     }
   });
 
+  useEffect(() => {
+    console.log("Hello")   
+  },[])
 
   useEffect(() => {
     setCategories({
       ...props.data
     })
   },[props.data])
+
+  // useEffect(() => {
+  //   if(db){
+  //     db.transaction(["categories"], "readwrite")
+  //     .objectStore("categories")
+  //     .add({
+  //       ssn : 1,
+  //       id : 1,
+  //       name : "test1",
+  //       email : "test1"
+  //     })
+  //   }
+  // },[db])
 
   const onPage = (isNext) => {  
     router.push({

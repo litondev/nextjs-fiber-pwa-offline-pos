@@ -23,8 +23,8 @@ MyApp.getInitialProps = async ({ctx}) => {
       let response = await axiosServer(ctx).get("/me");
       user = response.data
     }catch(err){
-      removeCookies("token",ctx)	
       if(err.response && err.response.status === 401){
+        removeCookies("token",ctx)	
         ctx.res.writeHead(302, {
           Location: '/auth/login'
         });      
@@ -38,8 +38,8 @@ MyApp.getInitialProps = async ({ctx}) => {
       let response = await axiosClient.get("/me");
       user = response.data     
     }catch(err){
-      removeCookies("token")
       if(err.response && err.response.status === 401){
+        removeCookies("token")
         Router.push("/auth/login")
       }
     }
