@@ -8,13 +8,13 @@ import (
 )
 
 type DetailOrder struct {
-	Qty       string `form:"qty" json:"qty" xml:"qty" validate:"required,number"`
-	Price     string `form:"price" json:"price" xml:"price" validate:"required,numeric"`
-	ProductID string `form:"product_id" json:"product_id" xml:"product_id" validate:"required,number"`
+	Qty       int     `form:"qty" json:"qty" xml:"qty" validate:"required"`
+	Price     float32 `form:"price" json:"price" xml:"price" validate:"required"`
+	ProductID *uint   `form:"product_id" json:"product_id" xml:"product_id" validate:"required"`
 }
 
 type TransactionRequest struct {
-	CustomerID   string         `form:"customer_id" json:"customer_id"  xml:"customer_id" validate:"required,number"`
+	CustomerID   *uint          `form:"customer_id" json:"customer_id"  xml:"customer_id" validate:"required"`
 	DetailOrders []*DetailOrder `form:"detail_orders" json:"detail_orders" xml:"detail_orders" validate:"min=1,required,dive"`
 }
 
@@ -31,7 +31,7 @@ func (requestData *TransactionRequest) ValidateExistsCustomer(database *gorm.DB)
 	queryData.First(&resultData)
 
 	if len(resultData) == 0 {
-		return errors.New("Category Tidak Ditemukan")
+		return errors.New("Pelanggan Tidak Ditemukan")
 	}
 
 	return nil

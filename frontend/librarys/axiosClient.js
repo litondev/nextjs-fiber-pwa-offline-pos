@@ -28,7 +28,7 @@ function refreshToken(){
 		// TIME NOW
 		// console.log(moment(miliseconds*1000).format("hh:mm:ss"))
 
-		if(moment(miliseconds*1000).isAfter(moment(decodedJWT.exp*1000).subtract(30,'minutes'))){
+		if(moment(miliseconds*1000).isAfter(moment(decodedJWT.exp*1000).subtract(10,'minutes'))){
 			let sendRefreshToken = axios;
 
 			sendRefreshToken.defaults.headers = {

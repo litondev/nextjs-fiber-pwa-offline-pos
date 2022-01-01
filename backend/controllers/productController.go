@@ -105,6 +105,18 @@ func IndexProduct(c *fiber.Ctx) error {
 	})
 }
 
+func GetAllProduct(c *fiber.Ctx) error {
+	database := c.Locals("DB").(*gorm.DB)
+
+	result := []map[string]interface{}{}
+
+	database.Model(&models.Product{}).Find(&result)
+
+	return c.Status(200).JSON(fiber.Map{
+		"data": result,
+	})
+}
+
 func GetCodeProduct(c *fiber.Ctx) error {
 	now := time.Now()
 	code := strconv.Itoa(now.Year()) + strconv.Itoa(int(now.Month())) + strconv.Itoa(now.Day()) + "-" + strconv.Itoa(now.Nanosecond())

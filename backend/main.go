@@ -136,6 +136,7 @@ func main() {
 	v1.Delete("/category/:id", controllers.DestroyCategory)
 	v1.Put("/category/:id", controllers.UpdateCategory)
 
+	v1.Get("/customer/all", controllers.GetAllCustomer)
 	v1.Get("/customer", controllers.IndexCustomer)
 	v1.Post("/customer", controllers.StoreCustomer)
 	v1.Get("/customer/:id", controllers.ShowCustomer)
@@ -148,6 +149,7 @@ func main() {
 	v1.Delete("/user/:id", controllers.DestroyUser)
 	v1.Put("/user/:id", controllers.UpdateUser)
 
+	v1.Get("/product/all", controllers.GetAllProduct)
 	v1.Get("/product", controllers.IndexProduct)
 	v1.Get("/product/code", controllers.GetCodeProduct)
 	v1.Post("/product", controllers.StoreProduct)

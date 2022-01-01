@@ -23,7 +23,7 @@ type DetailOrder struct {
 	ProductID *uint   `gorm:"column:product_id" json:"product_id"`
 	// NAMA DARI STRUCT SANGAT PENGARUH SEKALI
 	// ProductOrder ProductOrder `gorm:"Foreignkey:ProductID;association_foreignkey:ID" json:"product"`
-	Product Product `gorm:"json:product"`
+	Product Product `json:"product"`
 }
 
 type Customer struct {

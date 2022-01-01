@@ -124,7 +124,7 @@ export default function Category(props) {
 
           {show.detail_orders.map((item) => (
             <tr>
-              <td>{item.product}</td>
+              <td>{item.product.name}</td>
               <td>{item.qty}</td>
               <td>{item.price}</td>
               <td>{parseInt(item.qty) * parseInt(item.price)}</td>

@@ -4,7 +4,6 @@ import (
 	"api-gofiber/pos/models"
 	"api-gofiber/pos/requests"
 	"fmt"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -54,9 +53,7 @@ func Transaction(c *fiber.Ctx) error {
 	var realId uint = uint(id)
 	newRealId := &realId
 
-	customerId, _ := strconv.ParseInt(transaction.CustomerID, 10, 32)
-	realCustomerId := uint(customerId)
-	pointerCustomerId := &realCustomerId
+	pointerCustomerId := transaction.CustomerID
 
 	tx := database.Begin()
 
@@ -78,13 +75,13 @@ func Transaction(c *fiber.Ctx) error {
 	var total float32 = 0
 
 	for _, item := range transaction.DetailOrders {
-		qty, _ := strconv.ParseInt(item.Qty, 10, 32)
-		realQty := int(qty)
-		price, _ := strconv.ParseFloat(item.Price, 10)
-		realPrice := float32(price)
-		productId, _ := strconv.ParseInt(item.ProductID, 10, 32)
-		realProductId := uint(productId)
-		pointerProductId := &realProductId
+		// qty, _ := strconv.ParseInt(item.Qty, 10, 32)
+		realQty := item.Qty
+		// price, _ := strconv.ParseFloat(item.Price, 10)
+		realPrice := item.Price
+		// productId, _ := strconv.ParseInt(item.ProductID, 10, 32)
+		// realProductId := item.ProductID
+		pointerProductId := item.ProductID
 		pointerOrderId := &order.ID
 		detailOrder := models.DetailOrder{
 			Qty:       realQty,

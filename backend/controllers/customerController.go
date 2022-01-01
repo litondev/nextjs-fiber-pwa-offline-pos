@@ -76,6 +76,18 @@ func IndexCustomer(c *fiber.Ctx) error {
 	})
 }
 
+func GetAllCustomer(c *fiber.Ctx) error {
+	database := c.Locals("DB").(*gorm.DB)
+
+	result := []map[string]interface{}{}
+
+	database.Model(&models.Customer{}).Find(&result)
+
+	return c.Status(200).JSON(fiber.Map{
+		"data": result,
+	})
+}
+
 func StoreCustomer(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
