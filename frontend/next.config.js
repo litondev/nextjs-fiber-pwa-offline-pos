@@ -7,6 +7,6 @@ module.exports = {
 
 module.exports = withPWA({
   pwa: {
-    dest: 'public'
+    dest: 'public',
   }
 })

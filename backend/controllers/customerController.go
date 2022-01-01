@@ -33,7 +33,7 @@ func IndexCustomer(c *fiber.Ctx) error {
 	queryResultCount.Select("id")
 
 	if search != "" {
-		queryResultCount.Where("name LIKE ?", "%"+search+"%")
+		queryResultCount.Or("name LIKE ?", "%"+search+"%")
 		queryResultCount.Or("phone LIKE ?", "%"+search+"%")
 		queryResultCount.Or("address LIKE ?", "%"+search+"%")
 	}
@@ -54,7 +54,7 @@ func IndexCustomer(c *fiber.Ctx) error {
 	query := database.Model(&queryCount)
 	query.Select("name", "id", "phone", "email", "address")
 	if search != "" {
-		query.Where("name LIKE ?", "%"+search+"%")
+		query.Or("name LIKE ?", "%"+search+"%")
 		query.Or("phone LIKE ?", "%"+search+"%")
 		query.Or("address LIKE ?", "%"+search+"%")
 	}

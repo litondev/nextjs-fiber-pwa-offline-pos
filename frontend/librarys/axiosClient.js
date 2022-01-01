@@ -5,7 +5,6 @@ import { getCookies,setCookies,removeCookies } from 'cookies-next';
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
-
 axios.interceptors.request.use(config => { 	
   	config.headers['Authorization'] = getCookies(null,'token').token ? 'Bearer '+getCookies(null,'token').token : null
   	return config;
