@@ -12,7 +12,7 @@ axios.interceptors.request.use(config => {
 
 
 function refreshToken(){	
-	console.log("Refresh Token");
+	// console.log("Refresh Token");
 
 	if(getCookies(null,'token').token && typeof window !== 'undefined'){				
 		let token = getCookies(null,'token').token.split(".") 
@@ -28,7 +28,7 @@ function refreshToken(){
 		// TIME NOW
 		// console.log(moment(miliseconds*1000).format("hh:mm:ss"))
 
-		if(moment(miliseconds*1000).isAfter(moment(decodedJWT.exp*1000).subtract(30,'seconds'))){
+		if(moment(miliseconds*1000).isAfter(moment(decodedJWT.exp*1000).subtract(30,'minutes'))){
 			let sendRefreshToken = axios;
 
 			sendRefreshToken.defaults.headers = {

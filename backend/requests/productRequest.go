@@ -14,9 +14,9 @@ type ProductRequest struct {
 	Name        string `form:"name" json:"name" xml:"name" validate:"required"`
 	Code        string `form:"code" json:"code" xml:"code" validate:"required"`
 	Description *string
-	Stock       string `form:"stock" json:"stock" xml:"stock" validate:"required,number"`
-	Price       string `form:"price" json:"price" xml:"price" validate:"required,numeric"`
-	CategoryID  string `form:"category_id" json:"category_id" xml:"category_id"  validate:"required,number"`
+	Stock       int     `form:"stock" json:"stock" xml:"stock" validate:"required"`
+	Price       float32 `form:"price" json:"price" xml:"price" validate:"required"`
+	CategoryID  *uint   `form:"category_id" json:"category_id" xml:"category_id"  validate:"required"`
 }
 
 func (requestData *ProductRequest) ValidateData() error {

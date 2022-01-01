@@ -204,11 +204,9 @@ func StoreProduct(c *fiber.Ctx) error {
 		}
 	}
 
-	price, _ := strconv.ParseFloat(product.Price, 32)
-	stock, _ := strconv.ParseInt(product.Stock, 10, 32)
-	categoryID, _ := strconv.ParseUint(product.CategoryID, 10, 32)
-	realCategory := uint(categoryID)
-	realCategoryData := &realCategory
+	price := product.Price
+	stock := product.Stock
+	realCategoryData := product.CategoryID
 
 	productModel := models.Product{
 		Code:        product.Code,
@@ -351,11 +349,9 @@ func UpdateProduct(c *fiber.Ctx) error {
 		}
 	}
 
-	price, _ := strconv.ParseFloat(product.Price, 32)
-	stock, _ := strconv.ParseInt(product.Stock, 10, 32)
-	categoryID, _ := strconv.ParseUint(product.CategoryID, 10, 32)
-	realCategory := uint(categoryID)
-	realCategoryData := &realCategory
+	price := product.Price
+	stock := product.Stock
+	realCategoryData := product.CategoryID
 
 	queryData.Updates(&models.Product{
 		Code:        product.Code,

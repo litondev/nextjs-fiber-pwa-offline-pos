@@ -129,6 +129,7 @@ func main() {
 	v1.Post("/refresh-token", controllers.RefreshToken)
 	v1.Get("/me", controllers.Me)
 
+	v1.Get("/category/all", controllers.GetAllCategory)
 	v1.Get("/category", controllers.IndexCategory)
 	v1.Post("/category", controllers.StoreCategory)
 	v1.Get("/category/:id", controllers.ShowCategory)

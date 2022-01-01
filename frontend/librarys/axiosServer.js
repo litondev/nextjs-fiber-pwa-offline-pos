@@ -12,7 +12,7 @@ export default function axiosServer(context){
   	})
 
 	function refreshToken(){	
-		console.log("Refresh Token");
+		// console.log("Refresh Token");
 
 		if(getCookies(context,'token').token && typeof window === 'undefined'){				
 			let token = getCookies(context,'token').token.split(".") 
@@ -28,7 +28,7 @@ export default function axiosServer(context){
 			// TIME NOW
 			// console.log(moment(miliseconds*1000).format("hh:mm:ss"))
 	
-			if(moment(miliseconds*1000).isAfter(moment(decodedJWT.exp*1000).subtract(30,'seconds'))){
+			if(moment(miliseconds*1000).isAfter(moment(decodedJWT.exp*1000).subtract(30,'minutes'))){
 				let sendRefreshToken = instance;
 	
 				sendRefreshToken.defaults.headers = {

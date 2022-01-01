@@ -72,6 +72,18 @@ func IndexCategory(c *fiber.Ctx) error {
 	})
 }
 
+func GetAllCategory(c *fiber.Ctx) error {
+	database := c.Locals("DB").(*gorm.DB)
+
+	result := []map[string]interface{}{}
+
+	database.Model(&models.Category{}).Find(&result)
+
+	return c.Status(200).JSON(fiber.Map{
+		"data": result,
+	})
+}
+
 func StoreCategory(c *fiber.Ctx) error {
 	database := c.Locals("DB").(*gorm.DB)
 
